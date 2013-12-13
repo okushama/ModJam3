@@ -7,6 +7,7 @@ public class State {
 	public double posX, posY, posZ, prevPosX, prevPosY, prevPosZ;
 	public float pitch, yaw, prevPitch, prevYaw, yawHead, prevYawHead;
 	public double motionX, motionY, motionZ;
+	public boolean isSneaking, isSprinting;
 	
 	public State setTarget(EntityLivingBase t){
 		MoCapPlayback.target = t;
@@ -30,7 +31,8 @@ public class State {
 			motionX = MoCapPlayback.target.motionX;
 			motionY = MoCapPlayback.target.motionY;
 			motionZ = MoCapPlayback.target.motionZ;
-
+			isSneaking = MoCapPlayback.target.isSneaking();
+			isSprinting = MoCapPlayback.target.isSprinting();
 		}
 	}
 	
@@ -46,9 +48,11 @@ public class State {
 			MoCapPlayback.target.prevRotationYaw = prevYaw;
 			MoCapPlayback.target.rotationYawHead = yawHead;
 			MoCapPlayback.target.prevRotationYawHead = prevYawHead;
-			MoCapPlayback.target.motionX = motionX;
-			MoCapPlayback.target.motionY = motionY;
-			MoCapPlayback.target.motionZ = motionZ;
+			MoCapPlayback.target.motionX = motionX/0.8;
+			MoCapPlayback.target.motionY = motionY/0.8;
+			MoCapPlayback.target.motionZ = motionZ/0.8;
+			MoCapPlayback.target.setSneaking(isSneaking);
+			MoCapPlayback.target.setSprinting(isSprinting);
 		}
 	}
 }
