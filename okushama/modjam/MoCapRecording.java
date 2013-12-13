@@ -9,8 +9,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,6 +93,9 @@ public class MoCapRecording {
 	
 	public void addState(){
 		State s = new State();
+		if(MoCapPlayback.target instanceof EntityPlayer){
+			s = new PlayerState();
+		}
 		s.readEntityData();
 		recording.add(s);
 		totalLength = recording.size();
