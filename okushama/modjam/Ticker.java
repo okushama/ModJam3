@@ -9,10 +9,15 @@ import cpw.mods.fml.common.TickType;
 
 public class Ticker implements ITickHandler {
 
+	public static long tick = 0L;
+	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
 		if (type.equals(EnumSet.of(TickType.CLIENT))) {
 			onClientTick(tickData);
+		}
+		if (type.equals(EnumSet.of(TickType.RENDER))) {
+			onPlaybackTick(tickData);
 		}
 	}
 
@@ -40,14 +45,18 @@ public class Ticker implements ITickHandler {
 			if (MoCapPlayback.target == null || MoCapPlayback.target.isDead) {
 				MoCapPlayback.target = Minecraft.getMinecraft().thePlayer;
 			}
-			MoCapPlayback.instance().recordTick();
+		}
+	}
+	
+	public void onPlaybackTick(Object... tickData){
+		tick++;
+		MoCapPlayback.instance().recordTick();
 
-			if (MoCapPlayback.instance().getCurrentRecording() != null) {
-				//if(tickData[0] instanceof Float){
-				//	Float f = (Float)tickData[0];
-					MoCapPlayback.instance().getCurrentRecording().playback((float)1f);
-				//}
-			}
+		if (MoCapPlayback.instance().getCurrentRecording() != null) {
+			//if(tickData[0] instanceof Float){
+			//	Float f = (Float)tickData[0];
+				MoCapPlayback.instance().getCurrentRecording().playback((float)1f);
+			//}
 		}
 	}
 

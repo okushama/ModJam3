@@ -1,5 +1,8 @@
 package okushama.modjam;
 
+import java.util.Random;
+
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,27 +42,40 @@ public class State {
 		}
 	}
 	
+	public static float movementOffset = 20;
+	
 	
 	public void setEntityData(float partialTick){
 		if(MoCapPlayback.target != null){
-			MoCapPlayback.target.rotationPitch = pitch;
-			MoCapPlayback.target.rotationYaw = yaw;
-			MoCapPlayback.target.rotationYawHead = yawHead;
 			MoCapPlayback.target.prevRotationPitch = prevPitch;
 			MoCapPlayback.target.prevRotationYaw = prevYaw;
 			MoCapPlayback.target.prevRotationYawHead = prevYawHead;
-			MoCapPlayback.target.motionX = motionX/0.76;
-			MoCapPlayback.target.motionY = motionY/0.76;
-			MoCapPlayback.target.motionZ = motionZ/0.76;
-			MoCapPlayback.target.setPosition(posX, posY, posZ);
-			MoCapPlayback.target.prevPosX = prevPosX;
-			MoCapPlayback.target.prevPosY = prevPosY;
-			MoCapPlayback.target.prevPosZ = prevPosZ;
-		//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
-			MoCapPlayback.target.setSneaking(isSneaking);
-			MoCapPlayback.target.setSprinting(isSprinting);
-			if(MoCapPlayback.target == Minecraft.getMinecraft().thePlayer){
-				Minecraft.getMinecraft().gameSettings.keyBindSneak.pressed = isSneaking;
+			MoCapPlayback.target.rotationPitch = pitch;
+			MoCapPlayback.target.rotationYaw = yaw;
+			MoCapPlayback.target.rotationYawHead = yawHead;
+		
+			//movementOffset = 20+new Random().nextInt(000);
+			movementOffset = 1;
+			if(Ticker.tick > movementOffset){
+				Ticker.tick = 0;
+			}
+		//	if(Ticker.tick % movementOffset == 0)
+			{
+				MoCapPlayback.target.motionX = motionX/0.76;
+				MoCapPlayback.target.motionY = motionY/0.76;
+				MoCapPlayback.target.motionZ = motionZ/0.76;
+				MoCapPlayback.target.setPosition(posX, posY, posZ);
+				MoCapPlayback.target.prevPosX = prevPosX;
+				MoCapPlayback.target.prevPosY = prevPosY;
+				MoCapPlayback.target.prevPosZ = prevPosZ;
+			//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
+				MoCapPlayback.target.setPositionAndUpdate(posX, posY-MoCapPlayback.target.yOffset, posZ);
+
+				MoCapPlayback.target.setSneaking(isSneaking);
+				MoCapPlayback.target.setSprinting(isSprinting);
+				if(MoCapPlayback.target == Minecraft.getMinecraft().thePlayer){
+					Minecraft.getMinecraft().gameSettings.keyBindSneak.pressed = isSneaking;
+				}
 			}
 		}
 	}
