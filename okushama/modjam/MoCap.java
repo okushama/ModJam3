@@ -3,6 +3,7 @@ package okushama.modjam;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -21,6 +22,7 @@ public class MoCap {
 	public void init(FMLInitializationEvent event){
 		if(event.getSide() == Side.CLIENT){
 			TickRegistry.registerTickHandler(new Ticker(), Side.CLIENT);
+			KeyBindingRegistry.registerKeyBinding(new Keybinds());
 		}
 	}
 	
