@@ -89,6 +89,9 @@ public class Keybinds extends KeyHandler {
 				MoCapPlayback.instance().stopRecording();
 			}
 		}
+		if(kb.keyCode == slowmo.keyCode && mc.currentScreen == null && tickEnd){
+			MoCapPlayback.instance().isSlowmo = !MoCapPlayback.instance().isSlowmo;
+		}
 	}
 
 	@Override

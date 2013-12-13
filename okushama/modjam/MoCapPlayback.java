@@ -25,6 +25,10 @@ public class MoCapPlayback {
 	public static EntityLivingBase target;
 	public static File outFile = new File("mocap");
 	public static boolean isRecording = false;
+	public static boolean isSlowmo = false;
+	public static boolean isReverse = false;
+	public static boolean isPlaying = false;
+	public static boolean isPaused = false;
 	
 	private ArrayList<MoCapRecording> cachedRecordings = new ArrayList<MoCapRecording>();
 	

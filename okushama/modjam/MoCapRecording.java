@@ -21,7 +21,6 @@ public class MoCapRecording {
 	public String author;
 	public ArrayList<State> recording = new ArrayList<State>();
 	public long totalLength, currentTime = 0, originTime;
-	private boolean isPlaying = false, isPaused = false, isReverse = false;
 	
 	public MoCapRecording(){
 		originTime = System.currentTimeMillis();
@@ -39,26 +38,46 @@ public class MoCapRecording {
 
 	public void play(){
 		MoCap.log("Playing");
-		if(!isPlaying){
-			if(isReverse){
+		if(!MoCapPlayback.instance().isPlaying){
+			if(MoCapPlayback.instance().isReverse){
 				currentTime = totalLength-1;
 			}
-			isPlaying = true;
+			MoCapPlayback.instance().isPlaying = true;
 		}	
 	}
 	
-	public void playback(){
-		if(isPlaying){
-			if(!isPaused){
+	public int flipflop = 0;
+	
+	public void playback(float partialTick){
+		if(MoCapPlayback.instance().isPlaying){
+			if(!MoCapPlayback.instance().isPaused){
 				if(recording.size() > currentTime && currentTime > -1){
-					recording.get((int)currentTime).setEntityData();
-					if(!isReverse){
-						currentTime++;
+					recording.get((int)currentTime).setEntityData(partialTick);
+					if(!MoCapPlayback.instance().isReverse){
+						if(MoCapPlayback.instance().isSlowmo){
+							if(flipflop == 0){
+								currentTime++;
+								flipflop = 1;
+							}else{
+								flipflop = 0;
+							}
+						}else{
+							currentTime++;
+						}
 						if(currentTime == totalLength-1){
 							stop();
 						}
 					}else{
-						currentTime--;
+						if(MoCapPlayback.instance().isSlowmo){
+							if(flipflop == 0){
+								currentTime--;
+								flipflop = 1;
+							}else{
+								flipflop = 0;
+							}
+						}else{
+							currentTime--;
+						}
 						if(currentTime == 0){
 							stop();
 						}
@@ -72,8 +91,8 @@ public class MoCapRecording {
 	
 	public void stop(){
 		MoCap.log("Stopping");
-		isPlaying = false;
-		if(!isReverse)
+		MoCapPlayback.instance().isPlaying = false;
+		if(!MoCapPlayback.instance().isReverse)
 			currentTime = 0;
 		else
 			currentTime = totalLength-1;
@@ -81,14 +100,19 @@ public class MoCapRecording {
 	
 	public void pause(){
 		MoCap.log("Paused");
-		if(!isPaused){
-			isPaused = true;
+		if(!MoCapPlayback.instance().isPaused){
+			MoCapPlayback.instance().isPaused = true;
 		}
 	}
 	
 	public void reverse(){
 		MoCap.log("Reversing");
-		isReverse = !isReverse;
+		MoCapPlayback.instance().isReverse = !MoCapPlayback.instance().isReverse;
+	}
+	
+	public void slowmo(){
+		MoCap.log("Speed changed");
+		MoCapPlayback.instance().isSlowmo = !MoCapPlayback.instance().isSlowmo;
 	}
 	
 	public void addState(){

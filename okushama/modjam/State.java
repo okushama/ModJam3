@@ -39,7 +39,8 @@ public class State {
 		}
 	}
 	
-	public void setEntityData(){
+	
+	public void setEntityData(float partialTick){
 		if(MoCapPlayback.target != null){
 			MoCapPlayback.target.rotationPitch = pitch;
 			MoCapPlayback.target.rotationYaw = yaw;
@@ -47,13 +48,14 @@ public class State {
 			MoCapPlayback.target.prevRotationPitch = prevPitch;
 			MoCapPlayback.target.prevRotationYaw = prevYaw;
 			MoCapPlayback.target.prevRotationYawHead = prevYawHead;
-			MoCapPlayback.target.motionX = motionX/0.8;
-			MoCapPlayback.target.motionY = motionY/0.8;
-			MoCapPlayback.target.motionZ = motionZ/0.8;
-			MoCapPlayback.target.prevPosX = prevPosX;
-			MoCapPlayback.target.prevPosY = prevPosY;
-			MoCapPlayback.target.prevPosZ = prevPosZ;
-			MoCapPlayback.target.setPosition(posX, posY, posZ);
+			MoCapPlayback.target.motionX = motionX/0.76;
+			MoCapPlayback.target.motionY = motionY/0.76;
+			MoCapPlayback.target.motionZ = motionZ/0.76;
+			//MoCapPlayback.target.setPosition(posX, posY, posZ);
+		//	MoCapPlayback.target.prevPosX = prevPosX;
+		//	MoCapPlayback.target.prevPosY = prevPosY;
+		//	MoCapPlayback.target.prevPosZ = prevPosZ;
+		//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
 			MoCapPlayback.target.setSneaking(isSneaking);
 			MoCapPlayback.target.setSprinting(isSprinting);
 			if(MoCapPlayback.target == Minecraft.getMinecraft().thePlayer){

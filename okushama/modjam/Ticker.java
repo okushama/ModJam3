@@ -11,14 +11,13 @@ public class Ticker implements ITickHandler {
 
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-
+		if (type.equals(EnumSet.of(TickType.CLIENT))) {
+			onClientTick(tickData);
+		}
 	}
 
 	@Override
 	public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-		if (type.equals(EnumSet.of(TickType.CLIENT))) {
-			onClientTick(tickData);
-		}
 		if (type.equals(EnumSet.of(TickType.RENDER))) {
 			onRenderTick(tickData);
 		}
@@ -26,7 +25,7 @@ public class Ticker implements ITickHandler {
 
 	@Override
 	public EnumSet<TickType> ticks() {
-		return EnumSet.of(TickType.CLIENT, TickType.RENDER);
+		return EnumSet.of(TickType.CLIENT, TickType.RENDER, TickType.PLAYER);
 	}
 
 	@Override
@@ -41,17 +40,23 @@ public class Ticker implements ITickHandler {
 			if (MoCapPlayback.target == null || MoCapPlayback.target.isDead) {
 				MoCapPlayback.target = Minecraft.getMinecraft().thePlayer;
 			}
-			MoCapPlayback.instance().recordTick();
-
-			if (MoCapPlayback.instance().getCurrentRecording() != null) {
-				MoCapPlayback.instance().getCurrentRecording().playback();
-			}
 		}
 	}
 
 	public void onRenderTick(Object... tickData) {
 		if (Minecraft.getMinecraft().theWorld != null) {
 
+			//rec/playback
+			MoCapPlayback.instance().recordTick();
+
+			if (MoCapPlayback.instance().getCurrentRecording() != null) {
+				if(tickData[0] instanceof Float){
+					Float f = (Float)tickData[0];
+					MoCapPlayback.instance().getCurrentRecording().playback((float)f);
+				}
+			}
+			//
+			
 			String out = "";
 			if (MoCapPlayback.instance().isRecording) {
 				out = "REC";
