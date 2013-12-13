@@ -40,21 +40,22 @@ public class Ticker implements ITickHandler {
 			if (MoCapPlayback.target == null || MoCapPlayback.target.isDead) {
 				MoCapPlayback.target = Minecraft.getMinecraft().thePlayer;
 			}
+			MoCapPlayback.instance().recordTick();
+
+			if (MoCapPlayback.instance().getCurrentRecording() != null) {
+				//if(tickData[0] instanceof Float){
+				//	Float f = (Float)tickData[0];
+					MoCapPlayback.instance().getCurrentRecording().playback((float)1f);
+				//}
+			}
 		}
 	}
 
 	public void onRenderTick(Object... tickData) {
 		if (Minecraft.getMinecraft().theWorld != null) {
-
+			
 			//rec/playback
-			MoCapPlayback.instance().recordTick();
-
-			if (MoCapPlayback.instance().getCurrentRecording() != null) {
-				if(tickData[0] instanceof Float){
-					Float f = (Float)tickData[0];
-					MoCapPlayback.instance().getCurrentRecording().playback((float)f);
-				}
-			}
+			
 			//
 			
 			String out = "";
@@ -65,9 +66,11 @@ public class Ticker implements ITickHandler {
 				out = "Current: "
 						+ MoCapPlayback.instance().getCurrentRecording().title;
 			}
-			Minecraft.getMinecraft().ingameGUI.drawString(
-					Minecraft.getMinecraft().fontRenderer, out, 10, 10,
-					0xffffff);
+			
+			if(tickData[0] instanceof Float){
+				Float f = (Float)tickData[0];
+				Overlay.onRenderTick(f);
+			}
 		}
 	}
 

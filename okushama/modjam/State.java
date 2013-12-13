@@ -51,10 +51,10 @@ public class State {
 			MoCapPlayback.target.motionX = motionX/0.76;
 			MoCapPlayback.target.motionY = motionY/0.76;
 			MoCapPlayback.target.motionZ = motionZ/0.76;
-			//MoCapPlayback.target.setPosition(posX, posY, posZ);
-		//	MoCapPlayback.target.prevPosX = prevPosX;
-		//	MoCapPlayback.target.prevPosY = prevPosY;
-		//	MoCapPlayback.target.prevPosZ = prevPosZ;
+			MoCapPlayback.target.setPosition(posX, posY, posZ);
+			MoCapPlayback.target.prevPosX = prevPosX;
+			MoCapPlayback.target.prevPosY = prevPosY;
+			MoCapPlayback.target.prevPosZ = prevPosZ;
 		//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
 			MoCapPlayback.target.setSneaking(isSneaking);
 			MoCapPlayback.target.setSprinting(isSprinting);

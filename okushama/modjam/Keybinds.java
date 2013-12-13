@@ -15,7 +15,7 @@ import cpw.mods.fml.common.TickType;
 
 public class Keybinds extends KeyHandler {
 
-	public static KeyBinding play, pause, reverse, slowmo, stop, snapshot, record, next, prev;
+	public static KeyBinding play, pause, reverse, slowmo, stop, snapshot, record, next, prev, loop;
 	public static List keyBindings = new ArrayList<KeyBinding>();
 	public Minecraft mc;
 
@@ -35,6 +35,7 @@ public class Keybinds extends KeyHandler {
 		record = newKeybind("Record", Keyboard.KEY_G);
 		next = newKeybind("Next", Keyboard.KEY_G);
 		prev = newKeybind("Previous", Keyboard.KEY_G);
+		loop = newKeybind("Loop", Keyboard.KEY_G);
 	}
 
 	public static boolean[] getParArgs() {
@@ -91,6 +92,9 @@ public class Keybinds extends KeyHandler {
 		}
 		if(kb.keyCode == slowmo.keyCode && mc.currentScreen == null && tickEnd){
 			MoCapPlayback.instance().isSlowmo = !MoCapPlayback.instance().isSlowmo;
+		}
+		if(kb.keyCode == loop.keyCode && mc.currentScreen == null && tickEnd){
+			MoCapPlayback.instance().isLooping = !MoCapPlayback.instance().isLooping;
 		}
 	}
 

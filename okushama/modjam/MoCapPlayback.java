@@ -29,6 +29,7 @@ public class MoCapPlayback {
 	public static boolean isReverse = false;
 	public static boolean isPlaying = false;
 	public static boolean isPaused = false;
+	public static boolean isLooping = false;
 	
 	private ArrayList<MoCapRecording> cachedRecordings = new ArrayList<MoCapRecording>();
 	

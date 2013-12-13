@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.gson.Gson;
@@ -65,7 +66,11 @@ public class MoCapRecording {
 							currentTime++;
 						}
 						if(currentTime == totalLength-1){
-							stop();
+							if(MoCapPlayback.isLooping){
+								currentTime = 0;
+							}else{
+								stop();
+							}
 						}
 					}else{
 						if(MoCapPlayback.instance().isSlowmo){
@@ -79,7 +84,11 @@ public class MoCapRecording {
 							currentTime--;
 						}
 						if(currentTime == 0){
-							stop();
+							if(MoCapPlayback.isLooping){
+								currentTime = totalLength-1;
+							}else{
+								stop();
+							}
 						}
 					}
 				}else{
@@ -90,23 +99,23 @@ public class MoCapRecording {
 	}
 	
 	public void stop(){
-		MoCap.log("Stopping");
-		MoCapPlayback.instance().isPlaying = false;
-		if(!MoCapPlayback.instance().isReverse)
-			currentTime = 0;
-		else
-			currentTime = totalLength-1;
+		if(MoCapPlayback.instance().isPlaying){
+			MoCapPlayback.instance().isPlaying = false;
+			Overlay.stopStamp = Overlay.tick;
+			if(!MoCapPlayback.instance().isReverse)
+				currentTime = 0;
+			else
+				currentTime = totalLength-1;
+		}
 	}
 	
 	public void pause(){
-		MoCap.log("Paused");
-		if(!MoCapPlayback.instance().isPaused){
-			MoCapPlayback.instance().isPaused = true;
+		if(MoCapPlayback.instance().isPlaying){
+			MoCapPlayback.instance().isPaused = !MoCapPlayback.instance().isPaused;
 		}
 	}
 	
 	public void reverse(){
-		MoCap.log("Reversing");
 		MoCapPlayback.instance().isReverse = !MoCapPlayback.instance().isReverse;
 	}
 	
