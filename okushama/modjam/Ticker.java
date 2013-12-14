@@ -1,11 +1,13 @@
 package okushama.modjam;
 
+import java.io.File;
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
-
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.server.FMLServerHandler;
 
 public class Ticker implements ITickHandler {
 
@@ -13,7 +15,7 @@ public class Ticker implements ITickHandler {
 	
 	@Override
 	public void tickStart(EnumSet<TickType> type, Object... tickData) {
-		if (type.equals(EnumSet.of(TickType.CLIENT))) {
+		if (type.equals(EnumSet.of(TickType.PLAYER))) {
 			onClientTick(tickData);
 		}
 		if (type.equals(EnumSet.of(TickType.RENDER))) {
@@ -42,40 +44,37 @@ public class Ticker implements ITickHandler {
 
 	public void onClientTick(Object... tickData) {
 		if (Minecraft.getMinecraft().theWorld != null) {
-			if (MoCapPlayback.target == null || MoCapPlayback.target.isDead) {
-				MoCapPlayback.target = Minecraft.getMinecraft().thePlayer;
+			if (MoCapHandler.target == null || MoCapHandler.target.isDead) {
+				MoCapHandler.target = Minecraft.getMinecraft().thePlayer;
+			}
+			if(FMLClientHandler.instance() != null && FMLClientHandler.instance().getServer() != null){
+				String worldName = FMLClientHandler.instance().getServer().worldServerForDimension(Minecraft.getMinecraft().thePlayer.dimension).getSaveHandler().getWorldDirectoryName();
+				String currentDir = MoCapHandler.currentDirectory.getAbsolutePath();
+				if(!currentDir.endsWith(worldName+File.separator+"mocap")){
+					MoCapHandler.currentDirectory = new File("saves/"+worldName+"/mocap");
+					if(!MoCapHandler.currentDirectory.exists()){
+						MoCapHandler.currentDirectory.mkdir();
+					}
+					MoCapHandler.instance().populateRecordings();
+				}
 			}
 		}
 	}
 	
 	public void onPlaybackTick(Object... tickData){
 		tick++;
-		MoCapPlayback.instance().recordTick();
-
-		if (MoCapPlayback.instance().getCurrentRecording() != null) {
-			//if(tickData[0] instanceof Float){
-			//	Float f = (Float)tickData[0];
-				MoCapPlayback.instance().getCurrentRecording().playback((float)1f);
-			//}
+		MoCapHandler.instance().recordTick();
+		//MoCapHandler.instance().buffer.addState();
+		if (MoCapHandler.instance().getCurrentRecording() != null) {
+			if(tickData[0] instanceof Float){
+				Float f = (Float)tickData[0];
+				MoCapHandler.instance().getCurrentRecording().playback((float)f);
+			}
 		}
 	}
 
 	public void onRenderTick(Object... tickData) {
 		if (Minecraft.getMinecraft().theWorld != null) {
-			
-			//rec/playback
-			
-			//
-			
-			String out = "";
-			if (MoCapPlayback.instance().isRecording) {
-				out = "REC";
-			}
-			if (MoCapPlayback.instance().getCurrentRecording() != null) {
-				out = "Current: "
-						+ MoCapPlayback.instance().getCurrentRecording().title;
-			}
-			
 			if(tickData[0] instanceof Float){
 				Float f = (Float)tickData[0];
 				Overlay.onRenderTick(f);

@@ -12,8 +12,8 @@ public class PlayerState extends State{
 	@Override
 	public void readEntityData(){
 		super.readEntityData();
-		if(MoCapPlayback.target instanceof EntityPlayer){
-			EntityPlayer player = (EntityPlayer)MoCapPlayback.target;
+		if(MoCapHandler.target instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)MoCapHandler.target;
 			isSwinging = player.isSwingInProgress;
 			isUsingItem = player.isUsingItem();
 			currentSlot = player.inventory.currentItem;
@@ -23,8 +23,8 @@ public class PlayerState extends State{
 	@Override
 	public void setEntityData(float partialTick){
 		super.setEntityData(partialTick);
-		if(MoCapPlayback.target instanceof EntityPlayer){
-			EntityPlayer player = (EntityPlayer)MoCapPlayback.target;
+		if(MoCapHandler.target instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)MoCapHandler.target;
 			if(isSwinging && !player.isSwingInProgress){
 				player.swingItem();
 			}

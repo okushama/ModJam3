@@ -18,20 +18,33 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class MoCapPlayback {
+public class MoCapHandler {
 
-	private static MoCapPlayback instance;
+	private static MoCapHandler instance;
 	private int CURRENT = 0;
 	public static EntityLivingBase target;
-	public static File outFile = new File("mocap");
+	public static File currentDirectory = new File("mocap");
 	public static boolean isRecording = false;
 	public static boolean isSlowmo = false;
 	public static boolean isReverse = false;
 	public static boolean isPlaying = false;
 	public static boolean isPaused = false;
 	public static boolean isLooping = false;
+	public static boolean isModulated = false;
+	private static int MODE = 0;
+	public static final int RECORD = 0, REVERSE = 1, EDIT = 2;
 	
 	private ArrayList<MoCapRecording> cachedRecordings = new ArrayList<MoCapRecording>();
+	
+	public MoCapBuffer buffer = (MoCapBuffer) new MoCapBuffer().setTitle("Buffer");
+	
+	public static void setMode(int m){
+		MODE = m;
+	}
+	
+	public static int getMode(){
+		return MODE;
+	}
 	
 	public void startRecording(){
 		if(!isRecording){
@@ -76,6 +89,9 @@ public class MoCapPlayback {
 	}
 	
 	public MoCapRecording getCurrentRecording(){
+		if(getMode() == REVERSE){
+			return buffer;
+		}
 		if(cachedRecordings.size() == 0){
 			return null;
 		}
@@ -90,7 +106,11 @@ public class MoCapPlayback {
 	
 	public void populateRecordings(){
 		cachedRecordings.clear();
-		File[] files = outFile.listFiles();
+		if(getMode() == REVERSE){
+			cachedRecordings.add(buffer);
+			return;
+		}
+		File[] files = currentDirectory.listFiles();
 		for(File f : files){
 			if(f.getName().endsWith(".json")){
 				String fname = f.getName().split("\\.")[0];
@@ -102,17 +122,17 @@ public class MoCapPlayback {
 		}
 	}
 	
-	public static MoCapPlayback instance(){
+	public static MoCapHandler instance(){
 		if(instance == null){
-			instance = new MoCapPlayback();
+			instance = new MoCapHandler();
 			instance.populateRecordings();
 		}
 		return instance;
 	}
 	
 	static{
-		if(!outFile.exists()){
-			outFile.mkdir();
+		if(!currentDirectory.exists()){
+			currentDirectory.mkdir();
 			MoCap.log("Created dir! mocap/");
 		}
 	}

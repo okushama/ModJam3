@@ -15,7 +15,7 @@ import cpw.mods.fml.common.TickType;
 
 public class Keybinds extends KeyHandler {
 
-	public static KeyBinding play, pause, reverse, slowmo, stop, snapshot, record, next, prev, loop;
+	public static KeyBinding play, pause, reverse, slowmo, stop, record, next, prev, loop, toggleGui;
 	public static List keyBindings = new ArrayList<KeyBinding>();
 	public Minecraft mc;
 
@@ -31,11 +31,11 @@ public class Keybinds extends KeyHandler {
 		reverse = newKeybind("Reverse", Keyboard.KEY_G);
 		slowmo = newKeybind("Slow Motion", Keyboard.KEY_G);
 		stop = newKeybind("Stop", Keyboard.KEY_G);
-		snapshot = newKeybind("Snapshot", Keyboard.KEY_G);
 		record = newKeybind("Record", Keyboard.KEY_G);
 		next = newKeybind("Next", Keyboard.KEY_G);
 		prev = newKeybind("Previous", Keyboard.KEY_G);
 		loop = newKeybind("Loop", Keyboard.KEY_G);
+		toggleGui = newKeybind("Toggle GUI", Keyboard.KEY_G);
 	}
 
 	public static boolean[] getParArgs() {
@@ -66,35 +66,38 @@ public class Keybinds extends KeyHandler {
 	@Override
 	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {
 		if(kb.keyCode == play.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().getCurrentRecording().play();
+			MoCapHandler.instance().getCurrentRecording().play();
 		}
 		if(kb.keyCode == pause.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().getCurrentRecording().pause();
+			MoCapHandler.instance().getCurrentRecording().pause();
 		}
 		if(kb.keyCode == stop.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().getCurrentRecording().stop();
+			MoCapHandler.instance().getCurrentRecording().stop(true);
 		}
 		if(kb.keyCode == reverse.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().getCurrentRecording().reverse();
+			MoCapHandler.instance().getCurrentRecording().reverse();
 		}
 		if(kb.keyCode == next.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().nextRecording();
+			MoCapHandler.instance().nextRecording();
 		}
 		if(kb.keyCode == prev.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().prevRecording();
+			MoCapHandler.instance().prevRecording();
 		}
 		if(kb.keyCode == record.keyCode && mc.currentScreen == null && tickEnd){
-			if(!MoCapPlayback.instance().isRecording){
-				MoCapPlayback.instance().startRecording();
+			if(!MoCapHandler.instance().isRecording){
+				MoCapHandler.instance().startRecording();
 			}else{
-				MoCapPlayback.instance().stopRecording();
+				MoCapHandler.instance().stopRecording();
 			}
 		}
 		if(kb.keyCode == slowmo.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().isSlowmo = !MoCapPlayback.instance().isSlowmo;
+			MoCapHandler.instance().isSlowmo = !MoCapHandler.instance().isSlowmo;
 		}
 		if(kb.keyCode == loop.keyCode && mc.currentScreen == null && tickEnd){
-			MoCapPlayback.instance().isLooping = !MoCapPlayback.instance().isLooping;
+			MoCapHandler.instance().isLooping = !MoCapHandler.instance().isLooping;
+		}
+		if(kb.keyCode == toggleGui.keyCode && mc.currentScreen == null && tickEnd){
+			Overlay.isVisible = !Overlay.isVisible;
 		}
 	}
 

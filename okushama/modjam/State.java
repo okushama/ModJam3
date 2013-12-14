@@ -16,29 +16,29 @@ public class State {
 	public boolean isSneaking, isSprinting;
 	
 	public State setTarget(EntityLivingBase t){
-		MoCapPlayback.target = t;
+		MoCapHandler.target = t;
 		return this;
 	}
 	
 	public void readEntityData(){
-		if(MoCapPlayback.target != null){
-			posX = MoCapPlayback.target.posX;
-			posY = MoCapPlayback.target.posY;
-			posZ = MoCapPlayback.target.posZ;
-			prevPosX = MoCapPlayback.target.prevPosX;
-			prevPosY = MoCapPlayback.target.prevPosY;
-			prevPosZ = MoCapPlayback.target.prevPosZ;
-			pitch = MoCapPlayback.target.rotationPitch;
-			yaw = MoCapPlayback.target.rotationYaw;
-			prevPitch = MoCapPlayback.target.prevRotationPitch;
-			prevYaw = MoCapPlayback.target.prevRotationYaw;
-			yawHead = MoCapPlayback.target.rotationYawHead;
-			prevYawHead = MoCapPlayback.target.prevRotationYawHead;
-			motionX = MoCapPlayback.target.motionX;
-			motionY = MoCapPlayback.target.motionY;
-			motionZ = MoCapPlayback.target.motionZ;
-			isSneaking = MoCapPlayback.target.isSneaking();
-			isSprinting = MoCapPlayback.target.isSprinting();
+		if(MoCapHandler.target != null){
+			posX = MoCapHandler.target.posX;
+			posY = MoCapHandler.target.posY;
+			posZ = MoCapHandler.target.posZ;
+			prevPosX = MoCapHandler.target.prevPosX;
+			prevPosY = MoCapHandler.target.prevPosY;
+			prevPosZ = MoCapHandler.target.prevPosZ;
+			pitch = MoCapHandler.target.rotationPitch;
+			yaw = MoCapHandler.target.rotationYaw;
+			prevPitch = MoCapHandler.target.prevRotationPitch;
+			prevYaw = MoCapHandler.target.prevRotationYaw;
+			yawHead = MoCapHandler.target.rotationYawHead;
+			prevYawHead = MoCapHandler.target.prevRotationYawHead;
+			motionX = MoCapHandler.target.motionX;
+			motionY = MoCapHandler.target.motionY;
+			motionZ = MoCapHandler.target.motionZ;
+			isSneaking = MoCapHandler.target.isSneaking();
+			isSprinting = MoCapHandler.target.isSprinting();
 		}
 	}
 	
@@ -46,34 +46,36 @@ public class State {
 	
 	
 	public void setEntityData(float partialTick){
-		if(MoCapPlayback.target != null){
-			MoCapPlayback.target.prevRotationPitch = prevPitch;
-			MoCapPlayback.target.prevRotationYaw = prevYaw;
-			MoCapPlayback.target.prevRotationYawHead = prevYawHead;
-			MoCapPlayback.target.rotationPitch = pitch;
-			MoCapPlayback.target.rotationYaw = yaw;
-			MoCapPlayback.target.rotationYawHead = yawHead;
+		if(MoCapHandler.target != null){
+			MoCapHandler.target.prevRotationPitch = prevPitch;
+			MoCapHandler.target.prevRotationYaw = prevYaw;
+			MoCapHandler.target.prevRotationYawHead = prevYawHead;
+			MoCapHandler.target.rotationPitch = pitch;
+			MoCapHandler.target.rotationYaw = yaw;
+			MoCapHandler.target.rotationYawHead = yawHead;
 		
-			//movementOffset = 20+new Random().nextInt(000);
 			movementOffset = 1;
-			if(Ticker.tick > movementOffset){
-				Ticker.tick = 0;
+			if(MoCapHandler.isModulated){
+				movementOffset = 20+new Random().nextInt(2000);
 			}
-		//	if(Ticker.tick % movementOffset == 0)
+			if(Ticker.tick > movementOffset){
+				//Ticker.tick = 0;
+			}
+			if(Ticker.tick % movementOffset == 0)
 			{
-				MoCapPlayback.target.motionX = motionX/0.76;
-				MoCapPlayback.target.motionY = motionY/0.76;
-				MoCapPlayback.target.motionZ = motionZ/0.76;
-				MoCapPlayback.target.setPosition(posX, posY, posZ);
-				MoCapPlayback.target.prevPosX = prevPosX;
-				MoCapPlayback.target.prevPosY = prevPosY;
-				MoCapPlayback.target.prevPosZ = prevPosZ;
+				MoCapHandler.target.motionX = motionX/0.76;
+				MoCapHandler.target.motionY = motionY/0.76;
+				MoCapHandler.target.motionZ = motionZ/0.76;
+				MoCapHandler.target.setPosition(posX, posY, posZ);
+				MoCapHandler.target.prevPosX = prevPosX;
+				MoCapHandler.target.prevPosY = prevPosY;
+				MoCapHandler.target.prevPosZ = prevPosZ;
 			//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
-				MoCapPlayback.target.setPositionAndUpdate(posX, posY-MoCapPlayback.target.yOffset, posZ);
+				MoCapHandler.target.setPositionAndUpdate(posX, posY-MoCapHandler.target.yOffset, posZ);
 
-				MoCapPlayback.target.setSneaking(isSneaking);
-				MoCapPlayback.target.setSprinting(isSprinting);
-				if(MoCapPlayback.target == Minecraft.getMinecraft().thePlayer){
+				MoCapHandler.target.setSneaking(isSneaking);
+				MoCapHandler.target.setSprinting(isSprinting);
+				if(MoCapHandler.target == Minecraft.getMinecraft().thePlayer){
 					Minecraft.getMinecraft().gameSettings.keyBindSneak.pressed = isSneaking;
 				}
 			}

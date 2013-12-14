@@ -10,7 +10,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.gson.Gson;
@@ -38,95 +37,96 @@ public class MoCapRecording {
 	}
 
 	public void play(){
-		MoCap.log("Playing");
-		if(!MoCapPlayback.instance().isPlaying){
-			if(MoCapPlayback.instance().isReverse){
+		if(!MoCapHandler.instance().isPlaying && !MoCapHandler.instance().isRecording){
+			if(MoCapHandler.instance().isReverse){
 				currentTime = totalLength-1;
 			}
-			MoCapPlayback.instance().isPlaying = true;
+			MoCapHandler.instance().isPlaying = true;
 		}	
 	}
 	
 	public int flipflop = 0;
 	
 	public void playback(float partialTick){
-		if(MoCapPlayback.instance().isPlaying){
-			if(!MoCapPlayback.instance().isPaused){
+		if(MoCapHandler.instance().isPlaying){
+			if(!MoCapHandler.instance().isPaused){
 				if(recording.size() > currentTime && currentTime > -1){
 					recording.get((int)currentTime).setEntityData(partialTick);
-					if(!MoCapPlayback.instance().isReverse){
-						if(MoCapPlayback.instance().isSlowmo){
+					if(!MoCapHandler.instance().isReverse){
+						if(MoCapHandler.instance().isSlowmo){
 							if(flipflop == 0){
 								currentTime++;
-								flipflop = 1;
-							}else{
+							}
+								flipflop++;
+							if(flipflop == 3){
 								flipflop = 0;
 							}
 						}else{
 							currentTime++;
 						}
 						if(currentTime == totalLength-1){
-							if(MoCapPlayback.isLooping){
-								currentTime = 0;
-							}else{
-								stop();
-							}
+								stop(false);
 						}
 					}else{
-						if(MoCapPlayback.instance().isSlowmo){
+						if(MoCapHandler.instance().isSlowmo){
 							if(flipflop == 0){
 								currentTime--;
-								flipflop = 1;
-							}else{
+							}
+								flipflop++;
+							if(flipflop == 3){
 								flipflop = 0;
 							}
 						}else{
 							currentTime--;
 						}
 						if(currentTime == 0){
-							if(MoCapPlayback.isLooping){
-								currentTime = totalLength-1;
-							}else{
-								stop();
-							}
+								stop(false);
 						}
 					}
 				}else{
-					stop();
+					stop(false);
 				}
 			}
 		}
 	}
 	
-	public void stop(){
-		if(MoCapPlayback.instance().isPlaying){
-			MoCapPlayback.instance().isPlaying = false;
+	public void stop(boolean forced){
+		if(MoCapHandler.instance().isPlaying){
+			MoCapHandler.instance().isPlaying = false;
+			MoCapHandler.instance().isPaused = false;
+			if(forced){
+				MoCap.log("Killed Looping!");
+				MoCapHandler.instance().isLooping = false;
+			}
 			Overlay.stopStamp = Overlay.tick;
-			if(!MoCapPlayback.instance().isReverse)
+			if(!MoCapHandler.instance().isReverse){
 				currentTime = 0;
-			else
+			}else{
 				currentTime = totalLength-1;
+			}
+			if(MoCapHandler.isLooping){
+				play();
+			}
 		}
 	}
 	
 	public void pause(){
-		if(MoCapPlayback.instance().isPlaying){
-			MoCapPlayback.instance().isPaused = !MoCapPlayback.instance().isPaused;
+		if(MoCapHandler.instance().isPlaying){
+			MoCapHandler.instance().isPaused = !MoCapHandler.instance().isPaused;
 		}
 	}
 	
 	public void reverse(){
-		MoCapPlayback.instance().isReverse = !MoCapPlayback.instance().isReverse;
+		MoCapHandler.instance().isReverse = !MoCapHandler.instance().isReverse;
 	}
 	
 	public void slowmo(){
-		MoCap.log("Speed changed");
-		MoCapPlayback.instance().isSlowmo = !MoCapPlayback.instance().isSlowmo;
+		MoCapHandler.instance().isSlowmo = !MoCapHandler.instance().isSlowmo;
 	}
 	
 	public void addState(){
 		State s = new State();
-		if(MoCapPlayback.target instanceof EntityPlayer){
+		if(MoCapHandler.target instanceof EntityPlayer){
 			s = new PlayerState();
 		}
 		s.readEntityData();
@@ -135,11 +135,14 @@ public class MoCapRecording {
 	}
 	
 	public static void save(MoCapRecording mcr){
+		if(mcr instanceof MoCapBuffer){
+			return;
+		}
 		try{
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String t = mcr.title;
 			t = t.replaceAll(" ", "-");
-			File fout = new File(MoCapPlayback.outFile, t+".json");
+			File fout = new File(MoCapHandler.currentDirectory, t+".json");
 			if(!fout.exists()){
 				fout.createNewFile();
 			}
@@ -157,7 +160,7 @@ public class MoCapRecording {
 		MoCapRecording out = null;
 		try{
 			Gson gson = new Gson();
-			Reader in = new BufferedReader(new InputStreamReader(new FileInputStream(new File(MoCapPlayback.outFile, file))));
+			Reader in = new BufferedReader(new InputStreamReader(new FileInputStream(new File(MoCapHandler.currentDirectory, file))));
 			out = gson.fromJson(in, MoCapRecording.class);
 		}catch(Exception e){
 			e.printStackTrace();
