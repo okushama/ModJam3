@@ -4,10 +4,14 @@ import java.io.File;
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.server.FMLServerHandler;
 
 public class Ticker implements ITickHandler {
 
@@ -72,14 +76,82 @@ public class Ticker implements ITickHandler {
 			}
 		}
 	}
+	
 
-	public void onRenderTick(Object... tickData) {
+	public void onRenderTick(Object... tickData) {	
 		if (Minecraft.getMinecraft().theWorld != null) {
+			if(testEnt == null || !Minecraft.getMinecraft().theWorld.loadedEntityList.contains(testEnt) || testEnt.isDead){
+				testEnt = new EntityTest(Minecraft.getMinecraft().theWorld);
+				EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+				testEnt.setPosition(p.posX, p.posY, p.posZ);
+				Minecraft.getMinecraft().theWorld.spawnEntityInWorld(testEnt);
+			}
 			if(tickData[0] instanceof Float){
 				Float f = (Float)tickData[0];
 				Overlay.onRenderTick(f);
 			}
 		}
+	//	EntityRenderer r = Minecraft.getMinecraft().entityRenderer;
+		//r.renderWorld(1f, 0L);
+		Minecraft.getMinecraft().renderViewEntity = testEnt;
+		if(Minecraft.getMinecraft().objectMouseOver != null){
+			if(Minecraft.getMinecraft().objectMouseOver.entityHit != null){
+				if(Minecraft.getMinecraft().objectMouseOver.entityHit instanceof EntityLivingBase){
+					MoCapHandler.target = (EntityLivingBase)Minecraft.getMinecraft().objectMouseOver.entityHit;
+				}
+			}
+		}
+		MoCapHandler.target = Minecraft.getMinecraft().thePlayer;
+		Minecraft.getMinecraft().renderViewEntity = Minecraft.getMinecraft().thePlayer;
+
+	}
+	
+	public EntityTest testEnt = null;
+	
+	public static class EntityTest extends EntityLivingBase{
+
+		public EntityTest(World w){
+			super(w);
+		}
+		
+		@Override
+		protected void entityInit() {
+			super.entityInit();
+		}
+		
+		@Override
+		public void onUpdate(){
+			super.onUpdate();
+		}
+
+		@Override
+		public void readEntityFromNBT(NBTTagCompound nbttagcompound) {
+		}
+
+		@Override
+		public void writeEntityToNBT(NBTTagCompound nbttagcompound) {
+		}
+
+		@Override
+		public ItemStack getHeldItem() {
+			return null;
+		}
+
+		@Override
+		public ItemStack getCurrentItemOrArmor(int i) {
+			return null;
+		}
+
+		@Override
+		public void setCurrentItemOrArmor(int i, ItemStack itemstack) {
+			
+		}
+
+		@Override
+		public ItemStack[] getLastActiveItems() {
+			return null;
+		}
+		
 	}
 
 }

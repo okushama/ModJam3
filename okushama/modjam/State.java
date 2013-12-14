@@ -66,12 +66,11 @@ public class State {
 				MoCapHandler.target.motionX = motionX/0.76;
 				MoCapHandler.target.motionY = motionY/0.76;
 				MoCapHandler.target.motionZ = motionZ/0.76;
-				MoCapHandler.target.setPosition(posX, posY, posZ);
 				MoCapHandler.target.prevPosX = prevPosX;
 				MoCapHandler.target.prevPosY = prevPosY;
 				MoCapHandler.target.prevPosZ = prevPosZ;
 			//	MoCapPlayback.target.setLocationAndAngles(posX, posY-MoCapPlayback.target.yOffset, posZ, yaw, pitch);
-				MoCapHandler.target.setPositionAndUpdate(posX, posY-MoCapHandler.target.yOffset, posZ);
+				MoCapHandler.target.setPositionAndUpdate(posX, posY-(Minecraft.getMinecraft().thePlayer.yOffset)+(MoCapHandler.target.ySize), posZ);
 
 				MoCapHandler.target.setSneaking(isSneaking);
 				MoCapHandler.target.setSprinting(isSprinting);

@@ -48,7 +48,11 @@ public class MoCapHandler {
 	
 	public void startRecording(){
 		if(!isRecording){
-			MoCap.log("Started recording");
+			if(getCurrentRecording() != null){
+				if(isPlaying){
+					getCurrentRecording().stop(true);
+				}
+			}
 			MoCapRecording newRec = new MoCapRecording();
 			cachedRecordings.add(newRec);
 			CURRENT = cachedRecordings.size()-1;
@@ -58,7 +62,6 @@ public class MoCapHandler {
 	
 	public void stopRecording(){
 		if(isRecording){
-			MoCap.log("Stopped recording");
 			isRecording = false;
 			MoCapRecording.save(this.getCurrentRecording().setTitle(System.currentTimeMillis()+" mocap"));
 		}

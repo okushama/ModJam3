@@ -46,6 +46,16 @@ public class Overlay {
 		glColor4f(1f,1f,1f,1f);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		
+		Minecraft.getMinecraft().ingameGUI.drawRect(5, 5, 160, 53, 0xff000000);
+		
+		Minecraft.getMinecraft().ingameGUI.drawRect(7, 7, 159, 51, 0xffcccccc);
+				
+		Minecraft.getMinecraft().ingameGUI.drawRect(7, 51, 159, 52, 0xff999999);
+		Minecraft.getMinecraft().ingameGUI.drawRect(7, 6, 159, 7, 0xffdddddd);
+		
+		Minecraft.getMinecraft().ingameGUI.drawRect(6, 7, 7, 51, 0xff999999);
+		Minecraft.getMinecraft().ingameGUI.drawRect(157, 7, 159, 51, 0xffdddddd);
 		MoCapRecording r = MoCapHandler.instance().getCurrentRecording();
 		if(r == null){
 			glPopMatrix();
@@ -70,25 +80,26 @@ public class Overlay {
 			
 		}
 		String out = title+" - "+cur;
-		Minecraft.getMinecraft().ingameGUI.drawString(Minecraft.getMinecraft().fontRenderer, out, 10, 10,0xffffff);
+		Minecraft.getMinecraft().fontRenderer.drawString(out, 10, 10,0x000000);
+		glColor4f(1f,1f,1f,1f);
 		if(MoCapHandler.instance().isRecording){
 			if(tick % 100 > 30)
-				renderIcon(iconRecord, 6, 20, false);
+				renderIcon(iconRecord, 7, 20, false);
 		}else
 		if(MoCapHandler.instance().isPlaying){
 			if(MoCapHandler.instance().isLooping){
-				renderIcon(iconLoop, 6+32, 20, false);
+				renderIcon(iconLoop, 7+32, 20, false);
 			}
-			renderIcon(iconPlay, 6, 20, MoCapHandler.instance().isReverse);
+			renderIcon(iconPlay, 7, 20, MoCapHandler.instance().isReverse);
 			if(MoCapHandler.instance().isPaused){
-				renderIcon(iconPause, 6+16, 20, false);
+				renderIcon(iconPause, 7+16, 20, false);
 			}
 		}else{
 			if(stopStamp+80 > tick){
 				float diff = stopStamp+80 - tick;
 				glPushMatrix();
 				glColor4f(1f,1f,1f,diff/125);
-				renderIcon(iconStop, 6, 20, false);
+				renderIcon(iconStop, 7, 20, false);
 				glPopMatrix();
 			}
 		}

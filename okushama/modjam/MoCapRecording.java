@@ -95,7 +95,6 @@ public class MoCapRecording {
 			MoCapHandler.instance().isPlaying = false;
 			MoCapHandler.instance().isPaused = false;
 			if(forced){
-				MoCap.log("Killed Looping!");
 				MoCapHandler.instance().isLooping = false;
 			}
 			Overlay.stopStamp = Overlay.tick;
